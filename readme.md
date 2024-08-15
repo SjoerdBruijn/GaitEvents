@@ -78,8 +78,7 @@ events  = check_events(events,traj,VideoFrameRate)
 
 
 Lastly, you can also use this in several other ways, which just use the GUI in a smart way. For instance, if the above method of calculating heelstrikes based on the vertical position of the foot markers doesnt work, you can also calculate events based on the AP position of the foot markers (or some other thinsg). Again, Matlab only for now (but should be easy to implement in Python as well)
-NOTE: same file as above, so similar problem. Also NOTE: you CAN NOT YET use the "recalculate" button if you use a trick like this. 
-ALSO NOTE IMPORTANT: THIS GIVES ODD RESULTS WHERE THE HEELSTRIKES AND TOE OFFS ARE NOT IN THE ORDER WHICH YOU EXPECT THEM FOR WALKING!!!!
+Note, same file as above, so same problem... Also NOTE: you CAN NOT YET use the "recalculate" button if you use a trick like this. 
 ```
 clear all; close all; clc
 filename = 'ExampleData/ExampleC3D.c3d'
@@ -89,8 +88,8 @@ filename = 'ExampleData/ExampleC3D.c3d'
 
 Lfoot   = GetMarkerDataVicon(POINTdat,ParameterGroup,{'LHEE'});
 Rfoot   = GetMarkerDataVicon(POINTdat,ParameterGroup,{'RHEE'});
-Lfoot   = squeeze(Lfoot(2,:,:)); % we only use x position.
-Rfoot   = squeeze( Rfoot(2,:,:));
+Lfoot   = -squeeze(Lfoot(2,:,:)); % we only use x position, and x was negatively forward here. 
+Rfoot   = -squeeze( Rfoot(2,:,:));
 [Lmaxout, Lminout] = peakfind(Lfoot,VideoFrameRate);
 events.lhs  = Lmaxout(:,1); % we use max forward position of the foot as heelstrike
 events.lto  = Lminout(:,1); % and max backwoard position of the foot as toe off

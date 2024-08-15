@@ -77,8 +77,7 @@ events  = check_events(events,traj,VideoFrameRate)
 (NOTE: the above file contains a period of standing still first, and you will have to remove quite a few of wrongle detected events in the beginning of the file; all points before 1400 samples are basically wrong. )
 
 
-Lastly, you can also use this in several other ways, which just use the GUI in a smart way. For instance, if the above method of calculating heelstrikes based on the vertical position of the foot markers doesnt work, you can also calculate events based on the AP position of the foot markers (or some other thinsg). Again, Matlab only for now (but should be easy to implement in Python as well)
-NOTE: same file as above, so similar problem. Also NOTE: you CAN NOT YET use the "recalculate" button if you use a trick like this. 
+Lastly, you can also use this in several other ways, which just use the GUI in a smart way. For instance, if the above method of calculating heelstrikes based on the vertical position of the foot markers doesnt work, you can also calculate events based on the AP position of the foot markers (or some other thinsg). Again, Matlab only for now (but should be easy to implement in Python as well) Also NOTE: you CAN NOT YET use the "recalculate" button if you use a trick like this. 
 ```
 clear all; close all; clc
 filename = 'ExampleData/ExampleC3D.c3d'
@@ -88,8 +87,8 @@ filename = 'ExampleData/ExampleC3D.c3d'
 
 Lfoot   = GetMarkerDataVicon(POINTdat,ParameterGroup,{'LHEE'});
 Rfoot   = GetMarkerDataVicon(POINTdat,ParameterGroup,{'RHEE'});
-Lfoot   = squeeze(Lfoot(2,:,:)); % we only use x position.
-Rfoot   = squeeze( Rfoot(2,:,:));
+Lfoot   = -squeeze(Lfoot(2,:,3000:end)); % we only use x position, and x was negatively forward here. 
+Rfoot   = -squeeze( Rfoot(2,:,3000:end));
 [Lmaxout, Lminout] = peakfind(Lfoot,VideoFrameRate);
 events.lhs  = Lmaxout(:,1); % we use max forward position of the foot as heelstrike
 events.lto  = Lminout(:,1); % and max backwoard position of the foot as toe off
@@ -102,7 +101,7 @@ events  = check_events(events,[Lfoot,Rfoot],VideoFrameRate)
 
 ```
 Or you could do it with ground reaction forces, and some kind of % of GRF; 
-  
+Note; this is not the best example dataset, as it contains quite some steps which are on both belts.   
 
 ```
 clear all; close all;clc
@@ -113,8 +112,12 @@ treshold_force = 100; % or some other number, just what you like
 forces  = csvread(filename);
 Fzleft  = forces(:,3);
 Fzright = forces(:,6);
-events.lhs = diff(Fzleft>treshold_force)==1; % left heelstrike is when the force goes over treshold
-events.lto = diff(Fzleft>treshold_force)==1;
+events.lhs = find(diff(Fzleft>treshold_force)==1); % left heelstrike is when the force goes over treshold
+events.lto = find(diff(Fzleft>treshold_force)==-1);
+events.rhs = find(diff(Fzright>treshold_force)==1); % left heelstrike is when the force goes over treshold
+events.rto = find(diff(Fzright>treshold_force)==-1);
+events  = check_events(events,[Fzleft,Fzright],fs)
+
 
 references:
 [1] Roerdink
