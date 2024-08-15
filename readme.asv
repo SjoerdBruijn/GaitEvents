@@ -102,7 +102,7 @@ events  = check_events(events,[Lfoot,Rfoot],VideoFrameRate)
 
 ```
 Or you could do it with ground reaction forces, and some kind of % of GRF; 
-Note; this is not the best example dataset, as it contains quite some steps which are on both belts.   
+  
 
 ```
 clear all; close all;clc
@@ -113,12 +113,8 @@ treshold_force = 100; % or some other number, just what you like
 forces  = csvread(filename);
 Fzleft  = forces(:,3);
 Fzright = forces(:,6);
-events.lhs = find(diff(Fzleft>treshold_force)==1); % left heelstrike is when the force goes over treshold
-events.lto = find(diff(Fzleft>treshold_force)==-1);
-events.rhs = find(diff(Fzright>treshold_force)==1); % left heelstrike is when the force goes over treshold
-events.rto = find(diff(Fzright>treshold_force)==-1);
-events  = check_events(events,[Fzleft,Fzright],fs)
-
+events.lhs = diff(Fzleft>treshold_force)==1; % left heelstrike is when the force goes over treshold
+events.lto = diff(Fzleft>treshold_force)==1;
 
 references:
 [1] Roerdink
