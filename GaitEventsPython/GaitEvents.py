@@ -12,11 +12,14 @@ from scipy import interpolate
 
 class GaitEventChecker:
     def __init__(self, events, signal, fs, maxsubplots=2):
-       
+
         self.rawsignal = signal
         self.fs = fs
-        self.events = events
         _,self.signal = calc_events(self.rawsignal, self.fs)
+        try:
+            self.events,_ = order_events(events)
+        except:
+            self.events = events
         self.maxsubplots = maxsubplots
         self.notgood = True
         self.is_done = False

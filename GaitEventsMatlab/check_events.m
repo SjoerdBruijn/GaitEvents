@@ -45,6 +45,11 @@ function [events,notgood]=check_events(events, rawsignal, fs, varargin)
 %
 % ----V-----U------A-----M-----S-----T-----E-----r-----D-----A-----M-------
 [~,signal] = calc_events(rawsignal,fs);
+%% try ordering the evenst (may fail)
+try
+    events      = order_events(events);
+catch
+end
 
 ws = 10;%in seconds
 maxwindow   = ws*fs;

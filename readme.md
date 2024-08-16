@@ -21,10 +21,10 @@ in Matlab:
 clear all; close all;clc
 addpath(genpath('GaitEventsMatlab'))
 filename= 'ExampleData/ExampleCoP.csv'
-fs      = 200
-cop     = csvread(filename)
-events  = calc_events(cop, fs)
-events  = check_events(events,cop,fs)
+fs      = 200;
+cop     = csvread(filename);
+events  = calc_events(cop, fs);
+events  = check_events(events,cop,fs);
 ```
 
 You could also calculate heelstrikes (and toe offs) and check them based on a VU 3d model ```traj``` data structure, in which case the vertical position and velocity algorithm will be used; check the video here; 
@@ -47,8 +47,8 @@ in Matlab:
 ```
 clear all; close all;clc
 addpath(genpath('GaitEventsMatlab'))
-filename= 'ExampleData/Exampletraj.mat'
-data    = load(filename)
+filename= 'ExampleData/Exampletraj.mat';
+data    = load(filename);
 fs      = data.fs;
 traj    = data.traj;
 events  = calc_events(traj, fs);
@@ -69,8 +69,8 @@ traj.segment(1).joint_name = '';
 traj.segment(2).joint_name = '';
 traj.segment(1).origin  = GetMarkerDataVicon(POINTdat,ParameterGroup,{'LHEE'});
 traj.segment(2).origin  = GetMarkerDataVicon(POINTdat,ParameterGroup,{'RHEE'});
-events  = calc_events(traj, VideoFrameRate)
-events  = check_events(events,traj,VideoFrameRate)
+events  = calc_events(traj, VideoFrameRate);
+events  = check_events(events,traj,VideoFrameRate);
 
 ```
 (NOTE: the above file contains a period of standing still first, and you will have to remove quite a few of wrongle detected events in the beginning of the file; all points before 1400 samples are basically wrong. )
@@ -97,7 +97,7 @@ events.lto  = Lminout(:,1); % and max backwoard position of the foot as toe off
 [Rmaxout, Rminout] = peakfind(Rfoot,VideoFrameRate);
 events.rhs  = Rmaxout(:,1); % we use max forward position of the foot as heelstrike
 events.rto  = Rminout(:,1); % and max backwoard position of the foot as toe off
-events  = check_events(events,[Lfoot,Rfoot],VideoFrameRate)
+events  = check_events(events,[Lfoot,Rfoot],VideoFrameRate);
 
 
 
