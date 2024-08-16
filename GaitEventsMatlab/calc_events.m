@@ -111,7 +111,9 @@ else
     events.lto=to(y(to)> 0);
     events.rto=to(y(to)< 0);
 end
-%%
-
-events      = order_events(events);
+%% try ordering the evenst (may fail)
+try
+    events      = order_events(events);
+catch
+end
 events.fs   = fs;
