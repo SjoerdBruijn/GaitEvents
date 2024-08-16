@@ -1,0 +1,11 @@
+# Ignore MATLAB autosave files
+*.asv
+
+# Ignore Python bytecode files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ignore macOS system files
+.DS_Store

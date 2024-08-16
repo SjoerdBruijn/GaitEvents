@@ -510,8 +510,11 @@ def calc_events(signal, fs, tmpcor=1,fc=None):
         events['rhs'] = hc[y[hc] < 0].astype(int)
         events['lto'] = to[y[to] > 0].astype(int)
         events['rto'] = to[y[to] < 0].astype(int)
+    try:
+        events,flag = order_events(events)
+    except:
+        print('did not order events for some reason')
 
-    events,flag = order_events(events)
     events['fs'] = fs
     return events, signal
 
