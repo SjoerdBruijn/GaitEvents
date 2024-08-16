@@ -2,7 +2,7 @@
 *.asv
 
 # Ignore Python bytecode files
-__pycache__/
+GaitEventsPython/__pycache__/
 *.py[cod]
 *.pyo
 *.pyd
