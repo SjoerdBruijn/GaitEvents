@@ -103,13 +103,41 @@ events  = check_events(events,[Lfoot,Rfoot],VideoFrameRate);
 
 ```
 Or you could do it with ground reaction forces, and some kind of % of GRF; 
-Note; this is not the best example dataset, as it contains quite some steps which are on both belts.   
+In python:
+```
+import GaitEventsPython.GaitEvents as GE
+import numpy as np
 
+# Load data from CSV
+filename = 'ExampleData/ExampleForces.csv'
+fs = 1000
+threshold_force = 100  # or some other number, just what you like
+
+# Read CSV data into a NumPy array using genfromtxt
+forces = np.genfromtxt(filename, delimiter=',')
+
+# Extract relevant columns (indexing starts from 0 in Python)
+Fzleft = forces[:, 2]
+Fzright = forces[:, 5]
+
+# Calculate events using numpy
+events = {
+    'lhs': np.where(np.diff((Fzleft > threshold_force).astype(int)) == 1)[0],  # left heelstrike
+    'lto': np.where(np.diff((Fzleft > threshold_force).astype(int))  == -1)[0], # left toe-off
+    'rhs': np.where(np.diff((Fzright > threshold_force).astype(int))  == 1)[0], # right heelstrike
+    'rto': np.where(np.diff((Fzright > threshold_force).astype(int))  == -1)[0] # right toe-off
+}
+checker = GE.GaitEventChecker(events,forces[:,(2 ,5)],fs)
+events  = checker.events
+
+
+```
+in Matlab: 
 ```
 clear all; close all;clc
 addpath(genpath('GaitEventsMatlab'))
 filename= 'ExampleData/ExampleForces.csv'
-fs      = 200
+fs      = 1000
 treshold_force = 100; % or some other number, just what you like
 forces  = csvread(filename);
 Fzleft  = forces(:,3);
