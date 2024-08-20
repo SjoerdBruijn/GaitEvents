@@ -444,7 +444,7 @@ def calc_events(signal, fs, tmpcor=1,fc=None):
         signal = np.empty((len(traj["segment"][0,0]['origin'][2, 0, :]),))
         for i_seg in range(0,len(traj["segment"][0,])):
             if 'foot' in str(traj["segment"][0,i_seg]["name"]).lower():
-                if not str(traj["segment"][0,1]["joint_name"])=='[]':
+                if not str(traj["segment"][0,i_seg]["joint_name"])=='[]':
                     for i_joint in range(0,len(traj["segment"][0,i_seg]["joint_name"][0][:])):
                         flag=0
                         if 'heel' in str(traj["segment"][0,i_seg]["joint_name"][0][i_joint]).lower():
@@ -483,7 +483,7 @@ def calc_events(signal, fs, tmpcor=1,fc=None):
              b, a = sig.butter(2, fc / (fs / 2), 'low')
              signal = sig.filtfilt(b, a, signal.T).T  
         # Get some temporary heelstrikes, to get an idea of main frequency
-        nEst = min(120 * fs, len(signal[:, 0]))
+        nEst = int(min(120 * fs, len(signal[:, 0])))
 
         # Check power spectrum for first peak
         f, pxx = sig.welch(signal[:nEst, 1], fs, nperseg=2048, noverlap=25, nfft=2048, scaling='density')

@@ -4,6 +4,9 @@ Code to calculate heelstrike and toe offs, and correct these using a simple GUI.
 <iframe width="500" height="300" src="https://www.youtube.com/embed/LWktHNFrAtM?si=0d3FJcgGZDkwfXs_" frameborder="0" allowfullscreen></iframe>
 
 If you download the entire repo, and have your path set to the repo, you should be able to run the following code examples; in Python:
+(for some reason, in this example, you will need to recalculate the evenst with the win set to 0.1 in the GUI, which is not the case in the Matlab example; working to fix this)
+
+
 ```
 import GaitEventsPython.GaitEvents as GE
 import numpy as np
@@ -14,7 +17,6 @@ events,_  = GE.calc_events(cop, fs)
 checker = GE.GaitEventChecker(events,cop,fs)
 events  = checker.events
 ```
-(for some reason, in the above example, you will need to recalculate the evenst with the win set to 0.1, which is not the case in the Matlab example; working to fix this)
 
 in Matlab:
 ```
@@ -55,7 +57,36 @@ events  = calc_events(traj, fs);
 events  = check_events(events,traj,fs)
 ```
 
-if you dont have the ```traj``` structure, but you do have a C3D file, here is a trick to get those data in a ```traj``` structure in Matlab (sorry, no time to do this in Python yet, but should not be too hard to implement) 
+if you dont have the ```traj``` structure, but you do have a C3D file, here is a trick to get those data in a ```traj``` structure.
+in Python (this example requires the ezc3d package, see here https://github.com/pyomeca/ezc3d). Notes; this particular C3D file contains a period of standing still first, and you will have to remove quite a few of wrongle detected events in the beginning of the file; all points before 1400 samples are basically wrong. This example also leads to some weird results; recalculate with win=2 when checking gives you good results:
+```
+import numpy as np
+from ezc3d import c3d
+import GaitEventsPython.GaitEvents as GE
+
+
+filename = 'ExampleData/ExampleC3D.c3d'
+c = c3d(filename)
+point_data = c['data']['points']
+videoframeRate =c['header']['points']['frame_rate']
+LHI = c['parameters']['POINT']['LABELS']['value'].index('LHEE') #actually shoudl contain try statement, but I know this label is there, so lazy...
+RHI = c['parameters']['POINT']['LABELS']['value'].index('RHEE')
+
+dt = np.dtype([('name', 'U20'), ('joint_name', 'U20'), ('origin', 'O')])
+traj=dict()
+traj['segment']=np.zeros((1,2), dtype=dt)
+traj['segment'][0,0]['name'] = 'Left foot';
+traj['segment'][0,1]['name'] = 'Right foot';
+traj['segment'][0,0]['joint_name'] = '[]';
+traj['segment'][0,1]['joint_name'] = '[]';
+traj['segment'][0,0]['origin']  = np.expand_dims(point_data[0:3,LHI,:],axis=1)
+traj['segment'][0,1]['origin']  = np.expand_dims(point_data[0:3,RHI,:],axis=1)
+events,_= GE.calc_events(traj, videoframeRate)
+checker = GE.GaitEventChecker(events,traj,videoframeRate)
+events  = checker.events
+```` 
+ 
+in Matlab (you will see same problems due to stanidng still, however, not the win problem): 
 
 ```
 clear all; close all;clc
@@ -73,12 +104,37 @@ events  = calc_events(traj, VideoFrameRate);
 events  = check_events(events,traj,VideoFrameRate);
 
 ```
-(NOTE: the above file contains a period of standing still first, and you will have to remove quite a few of wrongle detected events in the beginning of the file; all points before 1400 samples are basically wrong. )
+
 
 
 Lastly, you can also use this in several other ways, which just use the GUI in a smart way. For instance, if the above method of calculating heelstrikes based on the vertical position of the foot markers doesnt work, you can also calculate events based on the AP position of the foot markers (or some other thinsg). Again, Matlab only for now (but should be easy to implement in Python as well)
 Note, same file as above, so same problem... here we solve that by simply ignoring the first part of the timeseries
 Also NOTE: you CAN NOT YET use the "recalculate" button if you use a trick like this. 
+in Python:
+```
+import numpy as np
+from scipy.signal import find_peaks
+from ezc3d import c3d
+import GaitEventsPython.GaitEvents as GE
+
+
+filename = 'ExampleData/ExampleC3D.c3d'
+c = c3d(filename)
+point_data = c['data']['points']
+videoframeRate =c['header']['points']['frame_rate']
+LHI = c['parameters']['POINT']['LABELS']['value'].index('LHEE') #actually shoudl contain try statement, but I know this label is there, so lazy...
+RHI = c['parameters']['POINT']['LABELS']['value'].index('RHEE')
+Lfoot = point_data[1,LHI,2999:].T
+Rfoot = point_data[1,RHI,2999:].T
+events=dict()
+events['lhs'],_  = find_peaks(-Lfoot,distance=videoframeRate)# we use max forward position of the foot as heelstrike
+events['lto'],_  = find_peaks(Lfoot,distance=videoframeRate)# and max backwoard position of the foot as toe off
+events['rhs'],_  = find_peaks(-Rfoot,distance=videoframeRate) # we use max forward position of the foot as heelstrike
+events['rto'],_ = find_peaks(Rfoot,distance=videoframeRate) # and max backwoard position of the foot as toe off
+checker = GE.GaitEventChecker(events,np.vstack((Lfoot, Rfoot)).T,videoframeRate)
+events  = checker.events
+````
+In Matlab
 ```
 clear all; close all; clc
 addpath(genpath('GaitEventsMatlab'))
