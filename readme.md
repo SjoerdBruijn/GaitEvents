@@ -203,7 +203,7 @@ events.lto = find(diff(Fzleft>treshold_force)==-1);
 events.rhs = find(diff(Fzright>treshold_force)==1); % left heelstrike is when the force goes over treshold
 events.rto = find(diff(Fzright>treshold_force)==-1);
 events  = check_events(events,[Fzleft,Fzright],fs)
-
+```
 
 references:
 [1] Roerdink
