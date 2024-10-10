@@ -429,7 +429,7 @@ def calc_events(signal, fs, tmpcor=1,fc=None):
     Function to calculate heel strikes and toe offs
 
     Parameters:
-    signal (numpy.ndarray or dict): Center of Pressure data in columns (or traj structure)
+    signal (numpy.ndarray or dict): Center of Pressure data in columns (or traj structure); if CoP; the columns should be: 1.ML(+ = right) the  2.AP(+ = forward)
     fs (float): Sample frequency of your data
     tmpcor (float, optional): Correction for the estimation of the step length. Defaults to 1.
 

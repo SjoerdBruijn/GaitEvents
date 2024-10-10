@@ -6,7 +6,7 @@ Code to calculate heelstrike and toe offs, and correct these using a simple GUI.
 If you download the entire repo, and have your path set to the repo, you should be able to run the following code examples; in Python:
 (for some reason, in this example, you will need to recalculate the evenst with the win set to 0.1 in the GUI, which is not the case in the Matlab example; working to fix this)
 
-Note; for the CoP, the columns should be: 1.ML(+ = right) the  2.AP(+ = forward)
+
 ```
 import GaitEventsPython.GaitEvents as GE
 import numpy as np

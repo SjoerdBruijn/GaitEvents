@@ -4,7 +4,7 @@ function [events,signal]=calc_events(signal,fs,varargin)
 %       [events] = calc_events(signal,fs,tmpcor)
 % INTPUT:
 %       signal          =   Center of Pressure data in collumns (or traj
-%       structure)
+%       structure), if CoP; the columns should be: 1.ML(+ = right) the  2.AP(+ = forward)
 %       fs              =   Sample frequency of your data
 %       tmpcor          =   Correction for the estimation of the step length
 % OUTPUT:
