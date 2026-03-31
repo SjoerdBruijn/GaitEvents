@@ -11,6 +11,26 @@ from scipy import interpolate
 
 
 class GaitEventChecker:
+    '''
+    A class for checking gait events in a signal.
+    - events (dict): Dictionary containing the gait events (lhs, rto, rhs, lto).
+    - signal (numpy.ndarray): The input signal.
+    - fs (float): The sampling frequency of the signal.
+    - maxsubplots (int, optional): The maximum number of subplots to display. Default is 2.
+    Methods:
+    - create_widgets(): Create the widgets for the GUI.
+    - on_click(event): Event handler for mouse click on the plot.
+    - KeyDownListener(event): Event handler for key press on the keyboard.
+    - update_plot(): Update the plot with the current gait events and signal.
+    - done(): Close the GUI and mark the process as done.
+    - exit_no_good(): Close the GUI and mark the data as not good.
+    - recalculate_events(): Recalculate the gait events based on the current parameters.
+    - next_window(): Move to the next window of the signal.
+    - prev_window(): Move to the previous window of the signal.
+    - delete_point(): Delete a selected gait event point.
+    - add_point(): Add a gait event point at the selected location.
+    '''
+    
     def __init__(self, events, signal, fs, maxsubplots=2):
 
         self.rawsignal = signal
