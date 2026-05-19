@@ -107,7 +107,7 @@ events  = check_events(events,traj,VideoFrameRate);
 
 
 
-Lastly, you can also use this in several other ways, which just use the GUI in a smart way. For instance, if the above method of calculating heelstrikes based on the vertical position of the foot markers doesnt work, you can also calculate events based on the AP position of the foot markers (or some other thinsg). Again, Matlab only for now (but should be easy to implement in Python as well)
+Lastly, you can also use this in several other ways, which just use the GUI in a smart way. For instance, if the above method of calculating heelstrikes based on the vertical position of the foot markers doesnt work, you can also calculate events based on the AP position of the foot markers (or some other thinsg). 
 Note, same file as above, so same problem... here we solve that by simply ignoring the first part of the timeseries
 Also NOTE: you CAN NOT YET use the "recalculate" button if you use a trick like this. 
 in Python:
